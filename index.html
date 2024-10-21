@@ -1,130 +1,188 @@
-<<!DOCTYPE html>
-    <html lang="en">
+ <!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Stock Tracker</title>
+     <style>
+         .navbar {
+             text-align: center;
+             font-size: 35px;
+             font-weight: bold;
+             color: white;
+             background-color: rgb(58, 43, 86);
+             padding: 10px 0;
+         }
+ 
+         .form {
+             text-align: center;
+             box-shadow: 0px 0px 5px 1px black;
+             margin: 30px auto;
+             width: fit-content;
+             padding: 20px;
+         }
+ 
+         div {
+             padding: 10px;
+             margin: 10px;
+         }
+ 
+         select,
+         input,
+         button {
+             font-size: 25px;
+             padding: 5px;
+         }
+ 
+         select {
+             width: 70%;
+             
+         }
+ 
+         #chart-container {
+             width: 95%;
+             margin: 50px auto;
+             box-shadow: 0px 0px 5px 1px black;
+         }
+     </style>
+ </head>
+ 
+ <body>
+     <nav class="navbar">Stock Tracker Dashboard</nav>
+     <form class="form">
+         <h1>Select Trending Stock</h1>
+         <div class="list-box">
+             <select name="stock" id="stock">
+                 <option value="AAPL">AAPL</option>
+                 <option value="NVDA">NVDA</option>
+                 <option value="BABA">BABA</option>
+                 <option value="GOOGL">GOOGL</option>
+                 <option value="TSLA">TSLA</option>
+                 <option value="FB">FB</option>
+                 <option value="NFLX">NFLX</option>
+                 <option value="AMZN">AMZN</option>
+                 <option value="INTC">INTC</option>
+                 <option value="MSFT">MSFT</option>
+             </select>
+             <button type="button" onclick="getData(event, 'select')">Load</button>
+         </div>
+ 
+         <div class="search-box">
+             <input type="text" id="search" placeholder="Search Stock Symbol">
+             <button type="button" onclick="getData(event, 'input')">Search</button>
+         </div>
+     </form>
+     <section id="stock-info">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Stock Tracker</title>
-        <style>
-            .navbar {
-                text-align: center;
-                font-size: 35px;
-                font-weight: bold;
-                color: white;
-                background-color: rgb(58, 43, 86);
-                padding: 10px 0;
-            }
-
-            .form {
-                text-align: center;
-                border: 2px solid red;
-                margin: 30px auto;
-                width: fit-content;
-                padding: 20px;
-            }
-
-            div {
-                border: 2px solid blue;
-                padding: 10px;
-                margin: 10px;
-            }
-
-            select,
-            input,
-            button {
-                font-size: 25px;
-                padding: 5px;
-            }
-
-            select {
-                width: 70%;
-            }
-
-            #chart-container {}
-        </style>
-    </head>
-
-    <body>
-        <nav class="navbar">Stock Tracker Dashboard</nav>
-        <form class="form">
-            <h1>Select Trending Stock</h1>
-            <div class="list-box">
-                <select name="stock" id="stock">
-                    <option value="AAPL">AAPL</option>
-                    <option value="NVDA">NVDA</option>
-                    <option value="BABA">BABA</option>
-                    <option value="GOOGL">GOOGL</option>
-                    <option value="TSLA">TSLA</option>
-                    <option value="FB">FB</option>
-                    <option value="NFLX">NFLX</option>
-                    <option value="AMZN">AMZN</option>
-                    <option value="INTC">INTC</option>
-                    <option value="MSFT">MSFT</option>
-                </select>
-                <button type="button" onclick="getData(event, 'select')">Load</button>
-            </div>
-
-            <div class="search-box">
-                <input type="text" id="search" placeholder="Search Stock Symbol">
-                <button type="button" onclick="getData(event, 'input')">Search</button>
-            </div>
-        </form>
-
-
-        <section id="chart-container">
-            <canvas id="my-chart">
-
-            </canvas>
-        </section>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            const API_KEY = "LQLAEFPL0IYGJ7QJ";
-
-            const getData = async (e, source) => {
-                e.preventDefault();
-
-                let stockSymbol = '';
-                if (source === 'select') {
-                    stockSymbol = document.getElementById('stock').value;
-                } else if (source === 'input') {
-                    stockSymbol = document.getElementById('search').value.trim();
-                }
-
-                if (!stockSymbol) {
-                    alert('Please select or enter a stock symbol');
-                    return;
-                }
-
-                const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockSymbol}&interval=5min&apikey=${API_KEY}`;
-
-                try {
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    console.log(data);
-                } catch (error) {
-                    console.log("ERROR WHILE FETCHING DATA", error);
-                }
-            }
-
-
-            const labels = Utils.months({ count: 7 });
-            const data = {
-                labels: labels,
-                datasets: [{
-                    label: 'My First Dataset',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            };
-
-
-
-
-        </script>
-    </body>
-
-    </html>
-
-
+     </section>
+ 
+     <section id="chart-container">
+         <canvas id="my-chart"></canvas>
+     </section>
+ 
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script>
+         const API_KEY = "LQLAEFPL0IYGJ7QJ";
+         let chartInstance = null;
+         let symbol;
+         const getData = async (e, source) => {
+             e.preventDefault();
+ 
+             let stockSymbol = '';
+             if (source === 'select') {
+                 stockSymbol = document.getElementById('stock').value;
+             } else if (source === 'input') {
+                 stockSymbol = document.getElementById('search').value.trim();
+             }
+ 
+             if (!stockSymbol) {
+                 alert('Please select or enter a stock symbol');
+                 return;
+             }
+ 
+             const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockSymbol}&interval=5min&apikey=${API_KEY}`;
+ 
+             try {
+                 const response = await fetch(url);
+                 const data = await response.json();
+                 console.log(data);
+                 const stockSymbol = data["Meta Data"].Symbol;
+                 console.log(stockSymbol);
+                 
+                 
+                 if (!data["Time Series (5min)"]) {
+                     alert("No valid data received. Please try again.");
+                     return;
+                 }
+ 
+               
+                 const timeSeries = data["Time Series (5min)"];
+                 const timestamps = [];
+                 const closingPrices = [];
+ 
+                 
+                 for (let time in timeSeries) {
+                     timestamps.push(time);
+                     closingPrices.push(timeSeries[time]["4. close"]);
+                 }
+ 
+                 
+                 timestamps.reverse();
+                 closingPrices.reverse();
+ 
+                
+                 updateChart(timestamps, closingPrices, stockSymbol);
+ 
+             } catch (error) {
+                 console.log("ERROR WHILE FETCHING DATA", error);
+             }
+         }
+ 
+        
+         const updateChart = (labels, data, stockSymbol) => {
+             const ctx = document.getElementById('my-chart').getContext('2d');
+ 
+             if (chartInstance) {
+                 chartInstance.destroy();
+             }
+ 
+             
+             chartInstance = new Chart(ctx, {
+                 type: 'line', 
+                 data: {
+                     labels: labels,
+                     datasets: [{
+                         label: `${stockSymbol} Closing Prices`,
+                         data: data,
+                         borderColor: 'rgb(75, 192, 192)',
+                         fill: false,
+                         tension: 0.1
+                     }]
+                 },
+                 options: {
+                     responsive: true,
+                     scales: {
+                         x: {
+                             display: true,
+                             title: {
+                                 display: true,
+                                 text: 'Time'
+                             }
+                         },
+                         y: {
+                             display: true,
+                             title: {
+                                 display: true,
+                                 text: 'Price (USD)'
+                             }
+                         }
+                     }
+                 }
+             });
+         }
+     </script>
+ </body>
+ 
+ </html>
+ 
